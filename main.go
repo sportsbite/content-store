@@ -18,9 +18,11 @@ func getenvDefault(key string, defaultVal string) string {
 	return val
 }
 
+var handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello World\n"))
+})
+
 func main() {
 
-	http.ListenAndServe(listenAddr, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello World\n"))
-	}))
+	http.ListenAndServe(listenAddr, handler)
 }
