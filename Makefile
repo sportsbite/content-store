@@ -11,5 +11,7 @@ run:
 clean:
 	-rm $(BINARY)
 
-test:
+test: build
 	go test
+	bundle install $(BUNDLER_ARGS) --quiet
+	USE_COMPILED_APPLICATION=1 bundle exec rspec
