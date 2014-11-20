@@ -5,7 +5,7 @@ class RegisterableRoute < OpenStruct
   validates :path, absolute_path: true
   validates :path, :type, presence: true
 
-  def register!(rendering_app)
+  def register!
     Rails.application.router_api.add_route(path, type, rendering_app)
   end
 end

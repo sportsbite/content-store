@@ -29,9 +29,9 @@ class RegisterableRouteSet < OpenStruct
   # All paths must be below the +base_path+ and +base_path+  must be defined as
   # a route for the routes to be valid.
   def self.from_content_item(item)
+    route_type = item.gone? ? RegisterableGoneRoute : RegisterableRoute
     registerable_routes = item.routes.map do |attrs|
-      route_type = item.gone? ? RegisterableGoneRoute : RegisterableRoute
-      route_type.new(attrs.slice("path", "type"))
+      route_type.new(attrs.slice("path", "type").merge("rendering_app" => item.rendering_app))
     end
     registerable_redirects = item.redirects.map do |attrs|
       RegisterableRedirect.new(attrs.slice("path", "type", "destination"))
@@ -50,11 +50,9 @@ class RegisterableRouteSet < OpenStruct
   def register!
     if is_redirect
       registerable_redirects.map(&:register!)
-    elsif is_gone
-      registerable_routes.map(&:register!)
     else
-      register_rendering_app
-      registerable_routes.each { |route| route.register!(rendering_app) }
+      register_rendering_app unless is_gone
+      registerable_routes.map(&:register!)
     end
     commit_routes
   end

@@ -12,9 +12,9 @@ describe RegisterableRouteSet, :type => :model do
       route_set = RegisterableRouteSet.from_content_item(item)
       expect(route_set.is_redirect).to eq(false)
       expected_routes = [
-        RegisterableRoute.new(:path => '/path',         :type => 'exact'),
-        RegisterableRoute.new(:path => '/path.json',    :type => 'exact'),
-        RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix'),
+        RegisterableRoute.new(:path => '/path',         :type => 'exact', :rendering_app => 'frontend'),
+        RegisterableRoute.new(:path => '/path.json',    :type => 'exact', :rendering_app => 'frontend'),
+        RegisterableRoute.new(:path => '/path/subpath', :type => 'prefix', :rendering_app => 'frontend'),
       ]
       expect(route_set.registerable_routes).to match_array(expected_routes)
       expect(route_set.registerable_redirects).to eq([])
@@ -65,10 +65,10 @@ describe RegisterableRouteSet, :type => :model do
 
       it 'is valid with a valid set of registerable routes' do
         @route_set.registerable_routes = [
-          RegisterableRoute.new(:path => "#{@route_set.base_path}", :type => 'exact'),
-          RegisterableRoute.new(:path => "#{@route_set.base_path}.json", :type => 'exact'),
-          RegisterableRoute.new(:path => "#{@route_set.base_path}/exact-subpath", :type => 'exact'),
-          RegisterableRoute.new(:path => "#{@route_set.base_path}/sub/path-prefix", :type => 'prefix'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}", :type => 'exact', rendering_app: 'frontend'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}.json", :type => 'exact', rendering_app: 'frontend'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}/exact-subpath", :type => 'exact', rendering_app: 'frontend'),
+          RegisterableRoute.new(:path => "#{@route_set.base_path}/sub/path-prefix", :type => 'prefix', rendering_app: 'frontend'),
         ]
         expect(@route_set).to be_valid
       end
