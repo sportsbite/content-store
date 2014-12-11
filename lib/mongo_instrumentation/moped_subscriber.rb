@@ -17,12 +17,22 @@ module MongoInstrumentation
       MongoInstrumentation::RuntimeRegistry.mongo_runtime ||= 0
     end
 
-    def self.reset_runtime
+    def self.query_count=(value)
+      MongoInstrumentation::RuntimeRegistry.mongo_query_count = value
+    end
+
+    def self.query_count
+      MongoInstrumentation::RuntimeRegistry.mongo_query_count ||= 0
+    end
+
+    def self.reset_instruments
       self.runtime =  0
+      self.query_count =  0
     end
 
     # The event handler for "query.moped" notifications.
     def query(event)
+      self.class.query_count += 1
       self.class.runtime += event.duration
     end
   end

@@ -9,7 +9,8 @@ module MongoInstrumentation
     def append_info_to_payload(payload)
       super
       payload[:db_runtime] = MongoInstrumentation::MopedSubscriber.runtime || 0
-      MongoInstrumentation::MopedSubscriber.reset_runtime
+      payload[:query_count] = MongoInstrumentation::MopedSubscriber.query_count || 0
+      MongoInstrumentation::MopedSubscriber.reset_instruments
     end
 
     module ClassMethods
@@ -17,6 +18,7 @@ module MongoInstrumentation
         super.tap do |messages|
           runtime = payload[:db_runtime]
           messages << ("Mongo: %.1fms" % runtime.to_f)
+          messages << ("Mongo query count: #{payload[:query_count]}")
         end
       end
     end

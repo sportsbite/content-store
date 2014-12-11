@@ -9,6 +9,6 @@ module MongoInstrumentation
   class RuntimeRegistry
     extend ActiveSupport::PerThreadRegistry
 
-    attr_accessor :mongo_runtime
+    attr_accessor :mongo_runtime, :mongo_query_count
   end
 end
