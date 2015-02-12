@@ -254,3 +254,13 @@ It must be one of:
 
 Other types may be added in future, the content store will just pass them through
 to the fanout.
+
+## `state`
+
+A string. Must be one of 'draft' or 'live'.
+
+Publishing applications can control whether to show content only on the
+draft stack by indicating that in the 'state' field:
+
+- draft: will cause content to appear only on the draft site,
+- live: will cause content to appear on the draft as well as live site.

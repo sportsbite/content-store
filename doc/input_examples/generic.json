@@ -9,6 +9,11 @@
   "public_updated_at": "2014-03-04T13:58:11+00:00", // the time the content was updated.
   "publishing_app": "base-hostname-of-app-that-owns-this-content", // must be resolvable with Plek.find(publishing_app)
   "rendering_app": "base-hostname-of-app-that-renders-this-content", // must be resolvable with Plek.find(rendering_app)
+  // state: One of 'draft' or 'live'. Publishing applications can control whether
+  // to show content only on the draft stack by indicating that in this field:
+  // - draft: will cause content to appear only on the draft site,
+  // - live: will cause content to appear on the draft as well as live site.
+  "state": "live",
   "details": {
     "app": "or format",
     "specific": "data..."
