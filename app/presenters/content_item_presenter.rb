@@ -25,14 +25,25 @@ class ContentItemPresenter
   end
 
   def as_json(options = nil)
-    @item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
+    presented_item = @item.as_json(options).slice(*PUBLIC_ATTRIBUTES).merge(
       "links" => links,
       "description" => RESOLVER.resolve(@item.description),
       "details" => RESOLVER.resolve(@item.details),
     )
+
+    presented_item = presented_item.merge("linked_items" => linked) if @item["expand_incoming_links"].any?
+    presented_item
   end
 
 private
+
+  def linked
+    @item["expand_incoming_links"].reduce({}) do |hash, incoming_link_type|
+      hash[incoming_link_type] = @item.incoming_links(type: incoming_link_type).map { |i| present_linked_item(i) }
+      hash
+    end
+  end
+
   def links
     Rails.application.statsd.time('public_content_item_presenter.links') do
       @item.linked_items.each_with_object({}) do |(link_type, linked_items), items|

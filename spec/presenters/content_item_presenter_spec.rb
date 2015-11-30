@@ -19,6 +19,29 @@ describe ContentItemPresenter do
     expect(presenter.as_json["base_path"]).to eq(item.base_path)
   end
 
+  context "with incoming links to expand" do
+    it "expands the incoming links" do
+      item = create(:content_item, :with_content_id, expand_incoming_links: ["parent"])
+      create(:content_item, title: "A", links: { "parent" => [item.content_id] })
+      create(:content_item, title: "B", links: { "parent" => [item.content_id] })
+
+      presenter = ContentItemPresenter.new(item, api_url_method)
+
+      incoming_link_titles = presenter.as_json["linked_items"]["parent"].map { |x| x['title'] }
+      expect(incoming_link_titles).to eql(["A", "B"])
+    end
+
+    it "expands the incoming links" do
+      item = create(:content_item, :with_content_id)
+      create(:content_item, title: "A", links: { "parent" => [item.content_id] })
+      create(:content_item, title: "B", links: { "parent" => [item.content_id] })
+
+      presenter = ContentItemPresenter.new(item, api_url_method)
+
+      expect(presenter.as_json["linked_items"]).to eql(nil)
+    end
+  end
+
   context "with related links" do
     let(:linked_item1) { create(:content_item, :with_content_id, locale: I18n.default_locale.to_s) }
     let(:linked_item2) { create(:content_item, :with_content_id, locale: "fr", analytics_identifier: "D2") }

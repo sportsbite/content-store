@@ -57,6 +57,7 @@ class ContentItem
   field :routes, :type => Array, :default => []
   field :redirects, :type => Array, :default => []
   field :links, :type => Hash, :default => {}
+  field :expand_incoming_links, :type => Array, :default => []
   field :access_limited, :type => Hash, :default => {}
   field :phase, :type => String, :default => 'live'
   field :analytics_identifier, :type => String
@@ -128,6 +129,10 @@ class ContentItem
 
   def base_path_without_root
     base_path.sub(%r{^/}, "")
+  end
+
+  def incoming_links(type:)
+    ContentItem.where("links.#{type}" => { "$in" => [ content_id ]})
   end
 
 protected
