@@ -18,7 +18,7 @@ class LinkedItemPresenter
       "locale" => linked_item.locale,
     }
 
-    if linked_item.has_attribute?(:analytics_identifier)
+    if linked_item.has_attribute?(:analytics_identifier) && linked_item.analytics_identifier.present?
       presented["analytics_identifier"] = linked_item.analytics_identifier
     end
 

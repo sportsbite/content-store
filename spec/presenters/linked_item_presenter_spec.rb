@@ -39,5 +39,15 @@ describe LinkedItemPresenter do
 
       expect(presenter.present['analytics_identifier']).to eql('UA-123123')
     end
+
+    it "doesn't add the analytics identifier if it is null" do
+      content_item = create(:content_item,
+        analytics_identifier: nil,
+      )
+
+      presenter = LinkedItemPresenter.new(content_item, api_url_method)
+
+      expect(presenter.present.has_key?('analytics_identifier')).to eql(false)
+    end
   end
 end
