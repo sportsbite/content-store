@@ -6,9 +6,6 @@ class ContentItem
 
   def self.create_or_replace(base_path, attributes)
     previous_item = ContentItem.where(base_path: base_path).first
-    lock = UpdateLock.new(previous_item)
-
-    lock.check_availability!(attributes)
 
     result = previous_item ? :replaced : :created
 
