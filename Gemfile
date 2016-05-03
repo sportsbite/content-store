@@ -23,7 +23,7 @@ else
   gem 'gds-api-adapters', '20.1.1'
 end
 
-gem 'govuk-content-schema-test-helpers', '1.3.0'
+gem 'govuk-content-schema-test-helpers', '~> 1.4.0'
 gem 'uuidtools', '2.1.5'
 
 group :development, :test do
