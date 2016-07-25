@@ -66,6 +66,8 @@ class ContentItem
   field :transmitted_at, type: String
   field :payload_version, type: Integer
   field :withdrawn_notice, type: Hash, default: {}
+  field :parsed, type: Boolean, default: false
+  field :content, type: String, default: ""
 
   scope :renderable_content, -> { where(:schema_name.nin => NON_RENDERABLE_FORMATS) }
 

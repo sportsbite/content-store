@@ -42,4 +42,7 @@ group :development, :test do
   gem "pact"
 
   gem "govuk-lint"
+
+  # automated tagging spike
+  gem 'nokogiri', '~> 1.6', '>= 1.6.8' # to extract content out of html bodies
 end
