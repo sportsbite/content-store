@@ -132,7 +132,6 @@ class ContentItem
 
   def register_routes(previous_item: nil)
     return if self.schema_name.start_with?("placeholder")
-    return if previous_item && previous_item.route_set == self.route_set
     self.route_set.register!
   end
 
