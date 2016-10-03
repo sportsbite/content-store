@@ -145,7 +145,7 @@ class ContentItem
 protected
 
   def route_set
-    @route_set ||= RouteSet.from_content_item(self)
+    RouteSet.from_content_item(self)
   end
 
 private
