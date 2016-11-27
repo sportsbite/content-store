@@ -47,4 +47,37 @@ describe "Fetching an access-limited content item", type: :request do
       expect(json["errors"]["code"]).to eq("403")
     end
   end
+
+  context "with a content ID specified in the header" do
+    let(:content_id) { access_limited_content_item.content_id }
+    before do
+      get "/content/#{access_limited_content_item.base_path}",
+        params: {}, headers: { 'Govuk-Content-Id' => content_id }
+    end
+
+    it "marks the cache-control as private" do
+      expect(cache_control["private"]).to eq(true)
+    end
+
+    context "if the content ID matches" do
+      it "returns the details" do
+        expect(response.status).to eq(200)
+        expect(response.content_type).to eq("application/json")
+
+        data = JSON.parse(response.body)
+        expect(data['title']).to eq(access_limited_content_item.title)
+      end
+    end
+
+    context "if the content ID does not match" do
+      let(:content_id) { SecureRandom.uuid }
+      it "returns a 403 Forbidden response" do
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eq(403)
+        expect(json["errors"]["type"]).to eq("access_forbidden")
+        expect(json["errors"]["code"]).to eq("403")
+      end
+    end
+  end
 end
