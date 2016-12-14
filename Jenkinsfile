@@ -14,13 +14,12 @@ node {
         sshagent(['govuk-ci-ssh-key']) {
           sh "${WORKSPACE}/jenkins.sh"
         }
-        publishHTML(target: [
-          allowMissing: false,
-          alwaysLinkToLastBuild: false,
-          keepAll: true,
-          reportDir: 'coverage/rcov',
-          reportFiles: 'index.html',
-          reportName: 'RCov Report'
+        step([
+            $class: 'RcovPublisher',
+            reportDir: "coverage/rcov",
+            targets: [
+                [metric: "CODE_COVERAGE", healthy: 75, unhealthy: 50, unstable: 30]
+            ]
         ])
       }
 
