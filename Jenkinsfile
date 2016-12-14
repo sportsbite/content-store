@@ -21,6 +21,8 @@ node {
                 [metric: "CODE_COVERAGE", healthy: 75, unhealthy: 50, unstable: 30]
             ]
         ])
+        sh 'RBENV_VERSION=system brakeman -o brakeman-output.tabs'
+        publishBrakeman 'brakeman-output.tabs'
       }
 
       stage("Push release tag") {
