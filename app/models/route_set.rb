@@ -67,8 +67,7 @@ class RouteSet < OpenStruct
         register_gone_route(route)
       end
     else
-      register_rendering_app
-
+      register_backend(rendering_app)
       routes.each do |route|
         register_route(route, rendering_app)
       end
@@ -83,37 +82,42 @@ class RouteSet < OpenStruct
 
 private
 
-  def register_rendering_app
-    Rails.application.router_api.add_backend(rendering_app, Plek.find(rendering_app) + "/")
+  def register_backend(rendering_app)
+    Backend.find_or_initialize_by(backend_id: rendering_app).tap do |backend|
+      if backend.new_record?
+        backend.backend_url = Plek.find(rendering_app) + "/"
+        backend.save!
+      end
+    end
   end
 
   def register_redirect(route)
-    Rails.application.router_api.add_redirect_route(
-      route.fetch(:path),
-      route.fetch(:type),
-      route.fetch(:destination),
-      route.fetch(:redirect_type, "permanent"),
+    Route.find_or_initialize_by(incoming_path: route.fetch(:path)).update_attributes!(
+      route_type: route.fetch(:type),
+      handler: 'redirect',
+      redirect_to: route.fetch(:destination),
+      redirect_type: route.fetch(:redirect_type, "permanent"),
       segments_mode: route[:segments_mode],
     )
   end
 
   def register_gone_route(route)
-    Rails.application.router_api.add_gone_route(
-      route.fetch(:path),
-      route.fetch(:type),
+    Route.find_or_initialize_by(incoming_path: route.fetch(:path)).update_attributes!(
+      route_type: route.fetch(:type),
+      handler: 'backend',
+      backend_id: rendering_app
     )
   end
 
   def register_route(route, rendering_app)
-    Rails.application.router_api.add_route(
-      route.fetch(:path),
-      route.fetch(:type),
-      rendering_app,
+    Route.find_or_initialize_by(incoming_path: route.fetch(:path)).update_attributes!(
+      route_type: route.fetch(:type),
+      handler: 'gone',
     )
   end
 
   def commit_routes
-    Rails.application.router_api.commit_routes
+    #Rails.application.router_api.commit_routes
   end
 
   def any_routes?

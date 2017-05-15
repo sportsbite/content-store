@@ -167,13 +167,7 @@ class ContentItem
   def register_routes(previous_item: nil)
     return unless should_register_routes?(previous_item: previous_item)
 
-    tries = Rails.application.config.register_router_retries
-    begin
-      route_set.register!
-    rescue GdsApi::BaseError
-      tries -= 1
-      tries.positive? ? retry : raise
-    end
+    route_set.register!
   end
 
   def base_path_without_root
